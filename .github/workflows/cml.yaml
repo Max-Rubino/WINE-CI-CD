@@ -15,5 +15,12 @@ jobs:
           # Train model
           python train.py
           
-          echo "MODEL METRIX"
-          cat metrics.txt
+          echo "MODEL METRIX" > report.md
+          cat metrics.txt >> report.md
+          
+          echo "## Data viz"
+          cml-publish feature_importance.png --md >> report.md
+          
+          cml-send-comment report.md
+          
+          

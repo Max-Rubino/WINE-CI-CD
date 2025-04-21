@@ -1,0 +1,26 @@
+name: model-wine-quality
+on: [push]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    container: docker://dvcorg/cml-py3:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: cml_run
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Install requirements
+          pip install -r requirements.txt
+          # Train model
+          python train.py
+          
+          echo "MODEL METRIX" > report.md
+          cat metrics.txt >> report.md
+          
+          echo "## Data viz"
+          cml-publish feature_importance.png --md >> report.md
+          
+          cml-send-comment report.md
+          
+          
